@@ -1,0 +1,22 @@
+{
+  "name": "video-processing-service",
+  "version": "1.0.0",
+  "description": "Video processing service for the barebone video application",
+  "main": "index.js",
+  "scripts": {
+    "start": "ts-node src/index.ts",
+    "build": "tsc",
+    "serve": "node dist/index.js"
+  },
+  "author": "Sid",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.0.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  }
+}
