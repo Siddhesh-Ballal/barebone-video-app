@@ -33,14 +33,16 @@ export function convertVideo(rawVideoName: string, processedVideoName: string) {
   return new Promise<void>((resolve, reject) => {
     ffmpeg(`${localRawVideoPath}/${rawVideoName}`)
       .outputOptions("-vf", "scale=1280:720") // apply video filter and scale it to 1280x720 resolution
-      .on("end", () => {
+      .on("end", function () {
         // When Video processing is completed
         console.log("Video processing completed");
         resolve(); // Resolve the promise to indicate processing is done
       })
-      .on("error", (err) => {
+      .on("error", function (err) {
         // console.error(`Error processing video: ${err}`);
-        console.log(`Internal server error: ${err.message}`);
+        console.log(
+          "An error occurred while processing the video: " + err.message
+        );
         reject(err); // Reject the promise with the error
       })
       .save(`${localProcessedVideoPath}/${processedVideoName}`);
@@ -83,7 +85,7 @@ export async function uploadProcessedVideo(fileName: string) {
   });
 
   console.log(
-    `Processed video file: ${fileName} uploaded to gs://${processedVideoBucketName}/${fileName}`
+    `${localProcessedVideoPath}/${fileName} uploaded to gs://${processedVideoBucketName}/${fileName}`
   );
 
   await bucket.file(fileName).makePublic(); // Make the file public
@@ -117,10 +119,10 @@ function deleteFile(filePath: string): Promise<void> {
     if (fs.existsSync(filePath)) {
       fs.unlink(filePath, (err) => {
         if (err) {
-          console.error(`File deletion failed: ${err}`);
+          console.error(`Failed to delete the file at ${filePath} `, err);
           reject(err); // Reject the promise with the error
         } else {
-          console.log(`File deleted successfully: ${filePath}`);
+          console.log(`File deleted successfully at: ${filePath}`);
           resolve(); // Resolve the promise when the file is deleted
         }
       });
