@@ -1,3 +1,27 @@
+import * as logger from "firebase-functions/logger";
+import * as functions from "firebase-functions/v1";
+import {initializeApp} from "firebase-admin/app";
+import {Firestore} from "firebase-admin/firestore";
+
+initializeApp();
+
+// Open firestore here in a privileged environment
+const firestore = new Firestore();
+
+export const createUser = functions.auth.user().onCreate((user) => {
+  const userInfo = {
+    uid: user.uid,
+    email: user.email,
+    photoURL: user.photoURL,
+  };
+
+  // Create user document
+  // This creates the collection and document if they don't exists already
+  firestore.collection("users").doc(user.uid).set(userInfo);
+  logger.info(`User Created: ${JSON.stringify(userInfo)}`);
+  return;
+});
+
 /**
  * Import function triggers from their respective submodules:
  *
@@ -7,10 +31,8 @@
  * See a full list of supported triggers at https://firebase.google.com/docs/functions
  */
 
-import {setGlobalOptions} from "firebase-functions";
-import {onRequest} from "firebase-functions/https";
-import * as logger from "firebase-functions/logger";
-
+// import {setGlobalOptions} from "firebase-functions";
+// import { onRequest } from "firebase-functions/v2/https";
 // Start writing functions
 // https://firebase.google.com/docs/functions/typescript
 
@@ -24,9 +46,10 @@ import * as logger from "firebase-functions/logger";
 // functions should each use functions.runWith({ maxInstances: 10 }) instead.
 // In the v1 API, each function can only serve one request per container, so
 // this will be the maximum concurrent request count.
-setGlobalOptions({ maxInstances: 10 });
+
+// setGlobalOptions({ maxInstances: 10 });
 
 // export const helloWorld = onRequest((request, response) => {
-//   logger.info("Hello logs!", {structuredData: true});
+//   logger.info("Hello logs!", { structuredData: true });
 //   response.send("Hello from Firebase!");
 // });
