@@ -9,6 +9,7 @@ import {
   setupDirectories,
   uploadProcessedVideo,
 } from "./storage";
+import { isVideoNew, setVideo } from "./firestore";
 
 setupDirectories(); // Ensure directories for raw and processed videos are set up
 
@@ -32,8 +33,21 @@ app.post("/process-video", async (req: any, res: any) => {
     return res.status(400).send("Bad request: Missing Filename");
   }
 
-  const inputVideoName = data.name; // The name of the raw video file (from the raw video bucket)
-  const outputVideoName = `processed${inputVideoName}`; // The name of the processed video file
+  const inputVideoName = data.name; // The name of the raw video file (from the raw video bucket) = <UID>-<DATE/TIMESTAMP>.<EXTENSION>
+  const outputVideoName = `processed-${inputVideoName}`; // The name of the processed video file
+  const videoId = inputVideoName.split(".")[0]; // The ID of the video (without the extension) = <UID>-<DATE/TIMESTAMP>
+
+  if (!isVideoNew(videoId)) {
+    return res
+      .status(400)
+      .send("Bad request: Video is already processing or processed");
+  } else {
+    setVideo(videoId, {
+      id: videoId,
+      uid: videoId.split("-")[0], // <UID>
+      status: "processing",
+    });
+  }
 
   // Download the raw video file from Google Cloud Storage
   await downloadRawVideo(inputVideoName);
@@ -57,6 +71,14 @@ app.post("/process-video", async (req: any, res: any) => {
 
   // Upload the processed video file to Google Cloud Storage
   await uploadProcessedVideo(outputVideoName);
+
+  // Update the status of the video in Firestore
+  // Await added to ensure this runs after uploadProcessedVideo
+  // Not mentioning uid and videoId as {merge : True} ensures the original data is not deleted, just new entries overwritten
+  await setVideo(videoId, {
+    status: "processed",
+    filename: outputVideoName,
+  });
 
   // We should clean up after successful processing as well.
   await Promise.all([

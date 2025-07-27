@@ -1,9 +1,9 @@
 import * as logger from "firebase-functions/logger";
 import * as functions from "firebase-functions/v1";
-import {initializeApp} from "firebase-admin/app";
-import {Firestore} from "firebase-admin/firestore";
-import {Storage} from "@google-cloud/storage";
-import {onCall} from "firebase-functions/v2/https";
+import { initializeApp } from "firebase-admin/app";
+import { Firestore } from "firebase-admin/firestore";
+import { Storage } from "@google-cloud/storage";
+import { onCall } from "firebase-functions/v2/https";
 
 initializeApp();
 
@@ -12,7 +12,6 @@ const firestore = new Firestore();
 const storage = new Storage();
 
 const rawVideoBucketName = "barebone-video-app-raw-videos-bucket";
-
 
 export const createUser = functions.auth.user().onCreate((user) => {
   const userInfo = {
@@ -28,40 +27,42 @@ export const createUser = functions.auth.user().onCreate((user) => {
   return;
 });
 
-export const generateUploadUrl = onCall({maxInstances: 1}, async (request) => {
-  // We don't need to manually enter user credentials.
-  // That's the good thing about callable (onCall) functions
-  // -> Firebase does that for us
+export const generateUploadUrl = onCall(
+  { maxInstances: 1 },
+  async (request) => {
+    // We don't need to manually enter user credentials.
+    // That's the good thing about callable (onCall) functions
+    // -> Firebase does that for us
 
-  // Check if the user is authenticated
-  if (!request.auth) {
-    throw new functions.https.HttpsError(
-      "failed-precondition",
-      "The function must be called while authenticated."
-    );
+    // Check if the user is authenticated
+    if (!request.auth) {
+      throw new functions.https.HttpsError(
+        "failed-precondition",
+        "The function must be called while authenticated."
+      );
+    }
+
+    const auth = request.auth;
+    const data = request.data;
+    const bucket = storage.bucket(rawVideoBucketName);
+
+    // Generate a unique filename for the video
+    // We do this by concatenating the UID and the current timestamp
+    // We also need to add the file extension
+    // -> Needed by the video processing service
+    const fileName = `${auth.uid}-${Date.now()}.${data.fileExtension}`; // Input Filename = <UID>-<Timestamp>.<FileExtension>
+
+    // Get a v4 signed URL for uploading file
+    const [url] = await bucket.file(fileName).getSignedUrl({
+      version: "v4",
+      action: "write",
+      // 15 minutes validity -> User has 15 min to upload file
+      expires: Date.now() + 15 * 60 * 1000,
+    });
+
+    return { url, fileName };
   }
-
-  const auth = request.auth;
-  const data = request.data;
-  const bucket = storage.bucket(rawVideoBucketName);
-
-  // Generate a unique filename for the video
-  // We do this by concatenating the UID and the current timestamp
-  // We also need to add the file extension
-  // -> Needed by the video processing service
-  const fileName = `${auth.uid}-${Date.now()}.${data.fileExtension}`;
-
-  // Get a v4 signed URL for uploading file
-  const [url] = await bucket.file(fileName).getSignedUrl({
-    version: "v4",
-    action: "write",
-    // 15 minutes validity -> User has 15 min to upload file
-    expires: Date.now() + 15 * 60 * 1000,
-  });
-
-  return {url, fileName};
-});
-
+);
 
 /**
  * Import function triggers from their respective submodules:
