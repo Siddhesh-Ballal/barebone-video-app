@@ -104,6 +104,10 @@ a.secondary {
   gap: 8px;
 }
 
+.thumbnail {
+  margin: 10px;
+}
+
 .footer img {
   flex-shrink: 0;
 }

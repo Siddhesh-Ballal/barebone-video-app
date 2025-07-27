@@ -1,9 +1,18 @@
-import { getFunctions, httpsCallable } from "firebase/functions";
-
-const functions = getFunctions();
+import { httpsCallable } from "firebase/functions";
+import { functions } from "./firebase";
 
 export const generateUploadUrl = httpsCallable(functions, "generateUploadUrl");
+export const getVideosFunction = httpsCallable(functions, "getVideos");
 // ^ This only works because we have specified firebaseConfig in firebase.ts
+
+export interface Video {
+  id?: string;
+  uid?: string;
+  filename?: string;
+  status?: "processing" | "processed";
+  title?: string;
+  description?: string;
+}
 
 export async function uploadVideo(file: File) {
   const response: any = await generateUploadUrl({
@@ -20,4 +29,10 @@ export async function uploadVideo(file: File) {
   });
 
   return;
+}
+
+
+export async function getVideos() {
+  const response = await getVideosFunction();
+  return response.data as Video[];
 }
