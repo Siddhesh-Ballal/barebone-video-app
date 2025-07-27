@@ -7,6 +7,7 @@ import SignIn from "./sign-in";
 import { useEffect, useState } from "react";
 import { onAuthStateChanged, User } from "firebase/auth";
 import { onAuthStateChangedHelper } from "../firebase/firebase";
+import Upload from "./upload";
 export default function Navbar() {
   // Maintain User auth state in Navbar component itself using react hook: useState.
   // Initialize user state as null
@@ -26,6 +27,7 @@ export default function Navbar() {
       <Link href="/">
         <Image src="/logo.png" alt="logo" width={180} height={50} />
       </Link>
+      {user && <Upload />}
       <SignIn user={user} />
     </nav>
   );
