@@ -5,7 +5,7 @@ import styles from "./navbar.module.css";
 import Link from "next/link";
 import SignIn from "./sign-in";
 import { useEffect, useState } from "react";
-import { onAuthStateChanged, User } from "firebase/auth";
+import { User } from "firebase/auth";
 import { onAuthStateChangedHelper } from "../firebase/firebase";
 import Upload from "./upload";
 export default function Navbar() {

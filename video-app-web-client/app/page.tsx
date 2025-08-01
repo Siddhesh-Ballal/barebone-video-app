@@ -12,7 +12,7 @@ export default async function Home() {
       <main>
         {
           videos.map((video) => (
-              <Link href={`/watch?v=${video.id}`}>
+              <Link href={`/watch?v=${video.filename}`} key={video.id}>
                 <Image
                   src={'/thumbnail.png'}
                   alt={'video'}
@@ -27,3 +27,8 @@ export default async function Home() {
     </div>
   );
 }
+
+
+export const revalidate = 30;
+// Disable caching to make sure we get latest data
+// -> Next.js will revalidate the page every 30 seconds
