@@ -4,7 +4,7 @@ A simplified skeleton of YouTube, designed and implemented as part of the [Full 
 
 ---
 
-## 🧠 Project Objective
+## Project Objective
 
 The goal of this project is to explore the fundamental building blocks of a video-sharing platform and implement a scalable backend/frontend pipeline using modern cloud tools. It emphasizes architectural simplicity while incorporating real-world concerns like scalability, async processing, and secure access.
 
@@ -38,7 +38,8 @@ The goal of this project is to explore the fundamental building blocks of a vide
 
 ## Architecture Overview
 
-> 
+> [](https://imagedelivery.net/CLfkmk9Wzy8_9HRyug4EVA/2d33be5f-6a51-4475-6975-7350d9d3d700/public)
+> ![Google Cloud Side Workflow.drawio.png](attachment:11ecb7a8-6a2b-4be2-87d8-715c8b25142f:Google_Cloud_Side_Workflow.drawio.png)
 
 - **Cloud Storage**: Stores both raw and processed videos.
 - **Cloud Pub/Sub**: Handles video upload events asynchronously.
