@@ -1,4 +1,4 @@
-<img src="https://github.com/user-attachments/assets/753ebea5-5721-4c9e-a920-f7387b9b4e83" width="24">
+<img src="https://github.com/user-attachments/assets/753ebea5-5721-4c9e-a920-f7387b9b4e83" width="50">
 
 # Barebone Video Application
 
