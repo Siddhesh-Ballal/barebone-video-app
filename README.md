@@ -1,4 +1,5 @@
-<img src="https://github.com/user-attachments/assets/753ebea5-5721-4c9e-a920-f7387b9b4e83" width="24" />
+<img src="https://github.com/user-attachments/assets/753ebea5-5721-4c9e-a920-f7387b9b4e83" width="24">
+
 # Barebone Video Application
 
 A simplified skeleton of YouTube, designed and implemented as part of the [Full Stack Development course by NeetCode](https://neetcode.io/courses/full-stack-dev/0).
