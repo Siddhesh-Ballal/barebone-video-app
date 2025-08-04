@@ -18,7 +18,7 @@ The goal of this project is to explore the fundamental building blocks of a vide
 
 -  User authentication with Google Sign-In (Firebase Auth)
 -  Video uploads for signed-in users
--  Automatic video transcoding into multiple formats (e.g., 360p, 720p)
+-  Automatic video transcoding into 720p to reduce storage space
 -  Video metadata storage and retrieval (Firestore)
 -  Public video listing and viewing
 -  Fully serverless and cloud-native architecture
